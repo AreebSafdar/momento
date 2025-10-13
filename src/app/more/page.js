@@ -88,8 +88,9 @@ export default function SimpleDialogDemo() {
                 Selected: {selectedValue}
             </Typography>
             <br />
-            <Button  onClick={handleClickOpen}>
-                more      </Button>
+            <Button onClick={handleClickOpen}>
+                more
+                </Button>
             <SimpleDialog
                 selectedValue={selectedValue}
                 open={open}

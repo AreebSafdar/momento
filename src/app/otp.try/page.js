@@ -96,7 +96,7 @@ export default function OTP() {
         </Box>
     );
 }
-
+{/*signup page */}
 // 'use client';
 
 // import * as React from 'react';
