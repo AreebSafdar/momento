@@ -31,6 +31,7 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = useForm();
 
+
   const handleLogin = async (data) => {
     console.log(data);
     try {
@@ -44,17 +45,36 @@ export default function Login() {
       const refresh = response.data.refresh
       localStorage.setItem("access", access)
       localStorage.setItem("refresh", refresh)
+
+      await fetchUserData(access);
       router.push('/home')
     } catch (error) {
       let message = error.response.data
       if (message?.type == "validation_error") {
         message?.errors?.map((error) => {
-          setError(error?.attr, {type: error?.code, message: error?.detail})
+          setError(error?.attr, { type: error?.code, message: error?.detail })
         })
+      } else if (message?.type == "client_error") {
+        setError("password", { type: "validate", message: message?.errors[0].detail })
       }
       // alert(error.message);
     }
   };
+
+  const fetchUserData = async (accessToken) => {
+    try {
+      const response = await axios.get("/api/user/me/", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      console.log("user data ", response)
+      localStorage.setItem("user", JSON.stringify(response.data));
+
+    } catch (error) {
+      console.error("fetching error");
+    }
+  }
 
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', p: 4 }}>
@@ -210,7 +230,7 @@ export default function Login() {
             <Typography variant="body2" sx={{ color: "black", textAlign: "center" }}>
               Don't have an account?{" "}
               <Link
-                href="/terms"
+                href="/signup"
                 underline="hover"
                 sx={{ color: "#506febff" }}
               >

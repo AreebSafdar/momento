@@ -90,7 +90,6 @@ export default function ReelPage() {
           <Typography variant="caption">One Direction · Night Changes</Typography>
         </Stack>
               </Box>
-
           </Typography>
         </Box>
 
@@ -99,16 +98,13 @@ export default function ReelPage() {
             <FavoriteBorderIcon fontSize="large"sx={{color:"black", fontSize:29 }} />
           </IconButton>
           <Typography variant="body2" sx={{color:"black"}} >917K</Typography>
-
           <IconButton>
             <ChatBubbleOutlineIcon fontSize="large"sx={{color:"black", fontSize:29}}  />
           </IconButton>
           <Typography variant="body2"sx={{color:"black"}} >13.1K</Typography>
-
           <IconButton>
             <SendIcon fontSize="large"sx={{color:"black", fontSize:29}}  />
           </IconButton>
-
           <IconButton>
             <MoreHorizIcon fontSize="large"sx={{color:"black", fontSize:29}}  />
           </IconButton>

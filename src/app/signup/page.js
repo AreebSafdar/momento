@@ -146,7 +146,7 @@ export default function SignupPage() {
                                         </Paper>
                                     </Tooltip>
                                     {errors.email && (
-                                        <Typography sx={{color:"red", mt:1 }}>
+                                        <Typography sx={{ color: "red", mt: 1 }}>
                                             {errors.email.message}
                                         </Typography>
                                     )}
@@ -180,12 +180,12 @@ export default function SignupPage() {
                                             />
                                         </Paper>
                                     </Tooltip>
-                                    {errors.username&& (
-                                        <Typography sx={{ color:"red", mt:1}}>
+                                    {errors.username && (
+                                        <Typography sx={{ color: "red", mt: 1 }}>
                                             {errors.username.message}
                                         </Typography>
                                     )}
-                                    <br/>
+                                    <br />
                                     {/*date and time*/}
                                     <LocalizationProvider
                                         dateAdapter={AdapterDayjs}
@@ -239,6 +239,28 @@ export default function SignupPage() {
                                 </form>
                             </>
                         }
+                    </Stack>
+                    <Stack
+                        sx={{
+                            backgroundColor: 'white',
+                            borderRadius: 2,
+                            width: 400,
+                            margin: '0 auto',
+                            boxShadow: 3,
+                            p: 3,
+                            mt: 3,
+                        }}
+                    >
+                        <Typography variant="body2" sx={{ color: "black", textAlign: "center" }}>
+                            Don't have an account?{" "}
+                            <Link
+                                href="/login"
+                                underline="hover"
+                                sx={{ color: "#506febff" }}
+                            >
+                                Login
+                            </Link>
+                        </Typography>
                     </Stack>
                 </Stack>
             </Stack>

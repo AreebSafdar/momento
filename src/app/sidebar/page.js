@@ -1,300 +1,250 @@
 'use client';
-
 import * as React from 'react';
 import {
-  Stack,
-  Typography,
-  Avatar,
-  Link as MuiLink,
-  Box,
-  Link,
-  Dialog,
-  DialogTitle,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemAvatar,
-  ListItemText,
-  Avatar as MuiAvatar,
-  IconButton,
+  Stack, Typography, Avatar, Link,
+   Box, Dialog, DialogTitle, List, ListItem,
+  ListItemButton, ListItemAvatar, ListItemText,
+   Avatar as MuiAvatar, keyframes, IconButton, useMediaQuery
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import {
-  HomeOutlined,
-  Menu,
-  WidgetsOutlined,
-  Search,
-  MessageOutlined,
-  FavoriteBorder,
-  AddCircleOutline,
-  RadioOutlined,
-  ExploreOutlined,
-  Settings,
-  Logout,
-  BookmarkBorder,
-  Brightness4,
-  ReportProblemOutlined,
+  HomeOutlined, Menu, WidgetsOutlined,
+   Search, MessageOutlined,FavoriteBorder,
+    AddCircleOutline, RadioOutlined, ExploreOutlined,
+  Settings, Logout, BookmarkBorder, Brightness4, ReportProblemOutlined,
 } from '@mui/icons-material';
-
-const person = { avatar: '/avatar.png' };
+import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
+import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  openMoreDialog,
+  closeMoreDialog,
+  openCreateDialog,
+  closeCreateDialog,
+} from '../../redux/uiSlice';
+import CustomizedDialogs from '../components/CustomizedDialogs';
+import { toggleTheme } from '@/redux/uiSlice';
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
 export default function Sidebar() {
-  const [open, setOpen] = React.useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { moreDialogOpen, createDialogOpen } = useSelector(state => state.ui);
+  
+  const themeMode = useSelector(state => state.ui.theme);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleOpenMore = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  React.useEffect(() => {
+    console.log(moreDialogOpen, createDialogOpen)
+  }, [])
 
-  // extra options shown in "More" dialog
+  const navigationItems = [
+    { name: "Home", path: "/", icon: <HomeOutlined /> },
+    { name: "Search", path: "/search", icon: <Search /> },
+    { name: "Explore", path: "/explore", icon: <ExploreOutlined /> },
+    { name: "Reels", path: "/reels", icon: <RadioOutlined /> },
+    { name: "Messages", path: "/messages", icon: <MessageOutlined /> },
+    { name: "Notifications", path: "/notification", icon: <FavoriteBorder /> },
+    { name: "Create", path: null, icon: <AddCircleOutline />, action:() => dispatch(openCreateDialog())},
+    { name: "Profile", path: "/profile", icon: <Avatar sx={{color: 'pink',backgroundColor: 'black',}}/> },
+  ];
+
   const moreOptions = [
-    { text: 'Settings', icon: <Settings /> },
-    { text: 'Saved', icon: <BookmarkBorder /> },
-    { text: 'Switch appearance', icon: <Brightness4 /> },
+    { text: 'Settings', path:"/setting", icon: <Settings/>},
+    { text: 'Saved', icon: <BookmarkBorder/>},
+    { text: "Switch appearance",
+  action: () => {
+    console.log("Sidebar: dispatching toggleTheme()");
+    dispatch(toggleTheme());
+    console.log("Sidebar: dispatched toggleTheme()");
+  },
+  icon: <Brightness4 /> },
+    // { text: 'Switch appearance', action: () => dispatch(toggleTheme()), icon: <Brightness4 /> },
     { text: 'Report a problem', icon: <ReportProblemOutlined /> },
     { text: 'Log out', icon: <Logout />, color: 'red' },
   ];
 
   return (
     <>
-      {/* Sidebar */}
-      <Stack sx={{ margin: 0, fontFamily: 'Lato, sans-serif' }}>
+      {/* Desktop Sidebar */}
+      {!isMobile ? (
         <Stack
           sx={{
             width: 250,
-            backgroundColor: 'white',
+           color:"text.primary",
             position: 'fixed',
             height: '100%',
             overflow: 'auto',
             p: 2,
             boxShadow: 3,
+            fontFamily: 'Lato, sans-serif',
           }}
         >
-          <Typography
-            variant="h4"
+          {/* Logo */}
+
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 700,
+          textTransform: "uppercase",
+          background: "linear-gradient(90deg, #e841cf, #f093ce)",
+          backgroundClip: "text",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          fontFamily: "Impact",
+        }}
+      >
+        <img src="https://media.istockphoto.com/id/921427336/vector/initial-hand-drawn-letter-m.
+        jpg?s=612x612&w=0&k=20&c=A3vgYFzdXa3jOHQQhnA3HucOFzTRmRDnlxOGLPl8Qd8=" alt="meta" width={28} />
+        Momento
+        </Typography>
+
+        {/* Navigation */}
+        {navigationItems.map(({ name, path, icon, action }, index) => (
+          <Link
+            key={index}
+            underline="none"
+            onClick={() => (action ? action() : router.push(path))}
             sx={{
-              display: 'block',
-              p: 1,
-              color: '#f08be4',
-              fontFamily: 'fantasy',
-            }}
-          >
-            Momento
-          </Typography>
-
-          {/* Sidebar Links */}
-          <Link href="/home" underline="none" sx={{ display: 'block', p: 1, color: 'black', mt: 3, fontSize: 15 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <HomeOutlined />
-              <Typography variant="body1">Home</Typography>
-            </Box>
-          </Link>
-
-          <Link href="/search" underline="none" sx={{ display: 'block', p: 1, color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <Search />
-              <Typography variant="body1">Search</Typography>
-            </Box>
-          </Link>
-
-          <Link href="/explore" underline="none" sx={{ display: 'block', p: 1, color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <ExploreOutlined />
-              <Typography variant="body1">Explore</Typography>
-            </Box>
-          </Link>
-
-          <Link href="/reels" underline="none" sx={{ display: 'block', p: 1, color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <RadioOutlined />
-              <Typography variant="body1">Reels</Typography>
-            </Box>
-          </Link>
-
-          <Link href="/messages" underline="none" sx={{ display: 'block', p: 1, color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <MessageOutlined />
-              <Typography variant="body1">Messages</Typography>
-            </Box>
-          </Link>
-
-          <Link href="/notification" underline="none" sx={{ display: 'block', p: 1, color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <FavoriteBorder />
-              <Typography variant="body1">Notifications</Typography>
-            </Box>
-          </Link>
-
-          <Link href="/create" underline="none" sx={{ display: 'block', p: 1, color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <AddCircleOutline />
-              <Typography variant="body1">Create</Typography>
-            </Box>
-          </Link>
-
-          <Link href="/profile" underline="none" sx={{ display: 'block', p: 1, color: 'black' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-              <Avatar src={person.avatar} sx={{ width: 25, height: 25 }} />
-              <Typography variant="body1">Profile</Typography>
-            </Box>
-          </Link>
-
-          {/* More button */}
-          <Box
-            onClick={handleOpenMore}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 2,
-              mt: 20,
-              p: 1,
-              color: 'black',
-              cursor: 'pointer',
+              color: "text.primary",
+              p: 1.5,
+              borderRadius: 2,
+              "&:hover": { backgroundColor: "action.hover", color: "primary.main" },
+              cursor: "pointer",
             }}
           >
-            <Menu />
-            <Typography variant="body1">More</Typography>
-          </Box>
+            {icon}
+            <Typography variant="body2" fontWeight={500}>
+              {name}
+            </Typography>
+          </Link>
+        ))}
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
-            <WidgetsOutlined />
-            <Typography variant="body1">Also from Meta</Typography>
-          </Box>
+        {/* More */}
+        <Box
+          onClick={() => dispatch(openMoreDialog())}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            mt: 20,
+            p: 1,
+            color: "text.primary",
+            cursor: 'pointer',
+          }}
+        >
+          <Menu />
+          <Typography variant="body1">More</Typography>
+        </Box>
+        <Link key="/try">
+         <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            mt: 1,
+            p: 1,
+            color: "text.primary",
+            cursor: 'pointer',
+          }}
+        >
+          <WidgetsOutlinedIcon />
+          <Typography variant="body1">Also From Meta</Typography>
+        </Box>
+        </Link>
         </Stack>
-      </Stack>
+      ) : null}
+  
+      {/* Mobile Bottom Bar */}
+      {isMobile ? (
+        <Box
+          sx={{
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 64,
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            bgcolor: 'background.paper',
+            boxShadow: 3,
+            zIndex: 1300,
+          }}
+        >
+          {navigationItems.map(({ name, path, icon, action }, idx) => (
+            <IconButton
+              key={idx}
+              onClick={() => (action ? action() : router.push(path))}
+              size="large"
+              color="inherit"
+              aria-label={name}
+            >
+              {icon}
+            </IconButton>
+          ))}
+          <IconButton onClick={() => dispatch(openMoreDialog())} color="inherit">
+            <Menu />
+          </IconButton>
+        </Box>
+      ) : null}
 
       {/* More Dialog */}
-      <Dialog onClose={handleClose} open={open}>
-        <DialogTitle>More Options</DialogTitle>
+      <Dialog onClose={() => dispatch(closeMoreDialog())} open={moreDialogOpen}>
+        <DialogTitle>Create</DialogTitle>
         <List sx={{ pt: 0 }}>
           {moreOptions.map((option) => (
             <ListItem disablePadding key={option.text}>
-              <ListItemButton onClick={handleClose}>
+              <ListItemButton
+            onClick={() => {
+              console.log(option)
+              if (option.action){
+                 option.action();   
+              dispatch(closeMoreDialog())
+              } else {
+                router.push(option.path)
+              }
+            }}
+          >
+              {/* <ListItemButton onClick={() => dispatch(closeMoreDialog())}> */}
                 <ListItemAvatar>
-                  <MuiAvatar sx={{ bgcolor: 'transparent', color: option.color || 'black' }}>
-                    {option.icon}
-                  </MuiAvatar>
+                  <MuiAvatar
+                  sx={{
+                    bgcolor: "transparent",
+                    color: option.color || "inherit",
+                    "&:hover": {
+                      color: themeMode === "light" ? "#ff9800" : "#fff176",
+                      transition: "color 0.3s ease",
+                    },
+                  }}
+                >
+                  {option.icon}
+                </MuiAvatar>
+
                 </ListItemAvatar>
                 <ListItemText
                   primary={option.text}
                   primaryTypographyProps={{
                     sx: { color: option.color || 'black', fontWeight: option.color ? 'bold' : 'normal' },
                   }}
+
                 />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
       </Dialog>
+      {/* Create Dialog */}
+      <CustomizedDialogs
+        open={createDialogOpen}
+        handleClose={() => dispatch(closeCreateDialog())}
+      />
     </>
   );
 }
 
 
-
-// import React, { useState } from "react";
-// import {
-//   Stack,
-//   Typography,
-//   Avatar,
-//   Link as MuiLink,
-//   Box,
-//   Link,
-// } from "@mui/material";
-// import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-// import MenuIcon from '@mui/icons-material/Menu';
-// import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
-// import SearchIcon from "@mui/icons-material/Search";
-// import PropTypes from 'prop-types';
-// import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
-// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-// import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-// import RadioOutlinedIcon from '@mui/icons-material/RadioOutlined';
-// import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
-    
-// function Sidebar() {
-//   // dummy data
-//   const person = { avatar: "/avatar.png" };
-//   return (
-//     <Stack sx={{ margin: 0, fontFamily: "Lato, sans-serif" }}>
-//       {/* Sidebar */}
-//       <Stack
-//         sx={{
-//           width: 250,
-//           backgroundColor: "white",
-//           position: "fixed",
-//           height: "100%",
-//           overflow: "auto",
-//           p: 2,
-//           boxShadow: 3,
-
-//         }}
-//       >
-//         <Typography
-//           variant="h4"
-//           sx={{ display: "block", p: 1, color: "#f08be4", fontFamily: "fantasy" }}
-//         >
-//           Momento
-//         </Typography>
-//         <Link href="/home" underline="none" sx={{ display: "block", p: 1, color: 'black', mt: 3, fontSize: 15 }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-//             <  HomeOutlinedIcon />
-//             <Typography variant="body1">Home</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/search" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-//             < SearchIcon />
-//             <Typography variant="body1">Search</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/explore" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-//             <ExploreOutlinedIcon />
-//             <Typography variant="body1">Explorer</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/reels" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-//             <RadioOutlinedIcon />
-//             <Typography variant="body1">Reels</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/messages" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-//             <MessageOutlinedIcon />
-//             <Typography variant="body1">Message</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/notification" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-//             <FavoriteBorderIcon />
-//             <Typography variant="body1">Notification</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/create" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
-//             <AddCircleOutlineIcon />
-//             <Typography variant="body1">Create</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/profile" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1, ml: 0 }}>
-//             <Avatar src={person.avatar} sx={{ width: 25, height: 25 }} />
-//             <Typography variant="body1">Profile</Typography>
-//           </Box>
-//         </Link>
-//         <Link href="/more" underline="none" sx={{ display: "block", p: 1, color: 'black' }}>  
-//           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 20 }}>
-//             <MenuIcon />
-//             <Typography variant="body1"><try/>more</Typography>
-//           </Box>
-//         </Link>
-//         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 2 }}>
-//           <WidgetsOutlinedIcon />
-//           <Typography variant="body1">Also From meta</Typography>
-//         </Box>
-//       </Stack>
-//     </Stack>
-
-//   );
-// }
-
-// export default Sidebar;

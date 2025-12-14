@@ -6,11 +6,15 @@ import {
     Avatar,
     Box,
     InputBase,
+    useMediaQuery,
 } from "@mui/material";
-import EditCalendarIcon from "@mui/icons-material/EditCalendar";
-import SearchIcon from "@mui/icons-material/Search";
+import { useTheme } from "@mui/material/styles";
+
 
 function Sidebar() {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    
     // Dummy avatar
     const person = { avatar: "/avatar.png" };
 
@@ -54,16 +58,16 @@ function Sidebar() {
     );
 
     return (
-        <Stack sx={{ margin: 0, fontFamily: "Lato, sans-serif", ml: 8 }}>
+        <Stack sx={{ margin: 0, fontFamily: "Lato, sans-serif", ml: isMobile ? 0 : 8, mb: isMobile ? 8 : 0 }}>
             {/* Sidebar */}
             <Stack
                 sx={{
-                    width: 300,
+                    width: isMobile ? "100%" : 300,
                     backgroundColor: "white",
-                    position: "fixed",
-                    height: "100%",
+                    position: isMobile ? "relative" : "fixed",
+                    height: isMobile ? "auto" : "100%",
                     overflow: "auto",
-                    p: 2,
+                    p: isMobile ? 1 : 2,
                     boxShadow: 3,
                 }}
             >
